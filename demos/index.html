@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdn.webrtc-experiment.com/style.css">
+
+    <title>Admin/Guest</title>
+
+    <meta name="description" content="Admin/Guest demo using RTCMultiConnection" />
+    <meta name="keywords" content="WebRTC,RTCMultiConnection,Demos,Experiments,Samples,Examples" />
+
+    <style>
+        video {
+            object-fit: fill;
+            width: 30%;
+        }
+        button,
+        input,
+        select {
+            font-weight: normal;
+            padding: 2px 4px;
+            text-decoration: none;
+            display: inline-block;
+            text-shadow: none;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .make-center {
+            text-align: center;
+            padding: 5px 10px;
+        }
+
+        .prompt-bar {
+            background: rgb(255, 255, 255);
+            border: 9px solid rgb(216, 216, 216);
+            border-radius: 5px;
+            bottom: 0;
+            box-shadow: 0 0 5px, inset 0 0 2px;
+            display: none;
+            position: fixed;
+            right: 0;
+            width: 30%;
+            z-index: 100;
+        }
+
+        .prompt-bar #notification-header {
+            border-bottom: 1px solid rgb(213, 211, 211);
+            display: block;
+            padding: .1em .6em;
+        }
+
+        .prompt-bar #notification-text {
+            padding: .2em .6em;
+        }
+
+        .prompt-bar #controls {
+            background: rgb(175, 174, 174);
+            border: 1px solid gray;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <article>
+
+        <header style="text-align: center;">
+            <h1>Dashboard da modelo</h1>
+        </header>
+
+
+        <div class="github-stargazers"></div>
+
+        <section class="experiment">
+            <div class="make-center">
+                <input type="text" id="admin-id" value="abcdef">
+                <button id="btn-become-admin">Criar sala</button>
+                <!-- <button id="btn-become-guest">I'm Guest</button> -->
+
+                <div id="room-urls" style="text-align: center;display: none;background: #F1EDED;margin: 15px -10px;border: 1px solid rgb(189, 189, 189);border-left: 0;border-right: 0;"></div>
+
+                <br><br>
+                <input type="text" id="input-text-chat" placeholder="Enter Text Chat" disabled>
+                <button id="share-file" disabled>Share File</button>
+            </div>
+
+            <div id="chat-container">
+                <div id="file-container"></div>
+                <div class="chat-output"></div>
+            </div>
+
+            <div id="videos-container"></div>
+        </section>
+
+        <div id="notification-box" class="prompt-bar">
+            <h2 id="notification-header">Notification</h2>
+            <p id="notification-text">Notification</p>
+            <div id="controls">
+                <button id="btn-notification-accept" style="float:right;">Accept</button>
+                <button id="btn-notification-close" style="float:left;">Close</button>
+                <section style="color: transparent;">Control Panel</section>
+            </div>
+        </div>
+
+        <script src="RTCMultiConnection.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+
+        <script src="FileBufferReader.js"></script>
+
+        <script src="rtc.js"></script>
+
+        
+
+</body>
+
+</html>
