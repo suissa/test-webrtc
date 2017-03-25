@@ -1,481 +1,387 @@
+// const nick = prompt('Qual seu nick?')
+// ......................................................
+// .......................UI Code........................
+// ......................................................
 
-          // const nick = prompt('Qual seu nick?')
-            // ......................................................
-            // .......................UI Code........................
-            // ......................................................
+document.getElementById('btn-become-admin').onclick = function() {
+    disableInputButtons();
 
-            document.getElementById('btn-become-admin').onclick = function() {
-                disableInputButtons();
+    connection.adminId = document.getElementById('admin-id').value;
+    connection.socketCustomEvent = connection.adminId;
 
-                connection.adminId = document.getElementById('admin-id').value;
-                connection.socketCustomEvent = connection.adminId;
+    connection.checkPresence(connection.adminId, function(isAdminOnline, adminId, adminInfo) {
+        if (isAdminOnline) {
+            rmcNotificationBox('Multiple admins are NOT allowed. An admin is using same "admin-id".', {
+                btnClose: false,
+                btnAccept: false,
+                btnAcceptText: '',
+                onBtnAcceptClicked: function() {},
+                autoClose: true,
+                autoCloseInterval: 5 * 1000
+            });
+            return;
+        }
 
-                connection.checkPresence(connection.adminId, function(isAdminOnline, adminId, adminInfo) {
-                    if(isAdminOnline) {
-                        rmcNotificationBox('Multiple admins are NOT allowed. An admin is using same "admin-id".', {
-                            btnClose: false,
-                            btnAccept: false,
-                            btnAcceptText: '',
-                            onBtnAcceptClicked: function() {},
-                            autoClose: true,
-                            autoCloseInterval: 5 * 1000
-                        });
-                        return;
-                    }
-
-                    connection.open(connection.adminId, function() {
-                        showRoomURL(connection.sessionid);
-                    });
-                    handleSocketCustomMessages();
-                });
-            };
-
-            // document.getElementById('btn-become-guest').onclick = function() {
-            //     disableInputButtons();
-
-            //     connection.adminId = document.getElementById('admin-id').value;
-            //     connection.socketCustomEvent = connection.adminId;
-
-            //     connection.checkPresence(connection.adminId, function(isAdminOnline, adminId, adminInfo) {
-            //         handleSocketCustomMessages();
-
-            //         if(!isAdminOnline) {
-            //             rmcNotificationBox('Admin seems offline.', {
-            //                 btnClose: true,
-            //                 btnAccept: false,
-            //                 btnAcceptText: '',
-            //                 onBtnAcceptClicked: function() {},
-            //                 autoClose: true,
-            //                 autoCloseInterval: 5 * 1000
-            //             });
-            //             return;
-            //         }
-
-
-            //         // if(adminInfo.adminBusy) {
-            //         //     rmcNotificationBox('Admin seems offline.', {
-            //         //         btnClose: true,
-            //         //         btnAccept: false,
-            //         //         btnAcceptText: '',
-            //         //         onBtnAcceptClicked: function() {},
-            //         //         autoClose: true,
-            //         //         autoCloseInterval: 5 * 1000
-            //         //     });
-            //         //     return;
-            //         // }
-
-            //         // if(adminInfo.adminBusy) {
-            //         //     rmcNotificationBox('Admin seems online however his status is showing "busy".', {
-            //         //         btnClose: true,
-            //         //         btnAccept: false,
-            //         //         btnAcceptText: '',
-            //         //         onBtnAcceptClicked: function() {},
-            //         //         autoClose: true,
-            //         //         autoCloseInterval: 5 * 1000
-            //         //     });
-            //         //     return;
-            //         // }
-
-            //         rmcNotificationBox('Admin is online. You can join him. He seems "available" as well.', {
-            //             btnClose: true,
-            //             btnAccept: true,
-            //             btnAcceptText: 'Join Admin',
-            //             onBtnAcceptClicked: function() {
-            //                 connection.sendCustomMessage({
-            //                     messageFor: adminId,
-            //                     newGuest: true,
-            //                     guestId: connection.userid,
-            //                     guestInfo: connection.extra
-            //                 });
-            //             },
-            //             autoClose: false,
-            //             autoCloseInterval: 2 * 1000
-            //         });
-            //     });
-            // };
+        connection.open(connection.adminId, function() {
+            showRoomURL(connection.sessionid);
+        });
+        handleSocketCustomMessages();
+    });
+};
 const guest = () => {
-                disableInputButtons();
+  disableInputButtons();
 
-                connection.adminId = document.getElementById('admin-id').value;
-                connection.socketCustomEvent = connection.adminId;
+  connection.adminId = document.getElementById('admin-id').value;
+  connection.socketCustomEvent = connection.adminId;
 
-                connection.checkPresence(connection.adminId, function(isAdminOnline, adminId, adminInfo) {
-                    handleSocketCustomMessages();
+  connection.checkPresence(connection.adminId, function(isAdminOnline, adminId, adminInfo) {
+      handleSocketCustomMessages();
 
-                    if(!isAdminOnline) {
-                        rmcNotificationBox('Admin seems offline.', {
-                            btnClose: true,
-                            btnAccept: false,
-                            btnAcceptText: '',
-                            onBtnAcceptClicked: function() {},
-                            autoClose: true,
-                            autoCloseInterval: 5 * 1000
-                        });
-                        return;
-                    }
+      if (!isAdminOnline) {
+          rmcNotificationBox('Admin seems offline.', {
+              btnClose: true,
+              btnAccept: false,
+              btnAcceptText: '',
+              onBtnAcceptClicked: function() {},
+              autoClose: true,
+              autoCloseInterval: 5 * 1000
+          });
+          return;
+      }
 
+      rmcNotificationBox('Admin is online. You can join him. He seems "available" as well.', {
+          btnClose: true,
+          btnAccept: true,
+          btnAcceptText: 'Join ' + connection.adminId,
+          onBtnAcceptClicked: function() {
+              connection.sendCustomMessage({
+                  messageFor: adminId,
+                  newGuest: true,
+                  guestId: connection.userid,
+                  guestInfo: connection.extra
+              });
+          },
+          autoClose: false,
+          autoCloseInterval: 2 * 1000
+      });
+  });
+};
+var notificationBox = document.getElementById('notification-box');
+var notificationText = document.getElementById('notification-text');
+var btnNotificationClose = document.getElementById('btn-notification-close');
+var btnNotificationAccept = document.getElementById('btn-notification-accept');
 
-                    // if(adminInfo.adminBusy) {
-                    //     rmcNotificationBox('Admin seems offline.', {
-                    //         btnClose: true,
-                    //         btnAccept: false,
-                    //         btnAcceptText: '',
-                    //         onBtnAcceptClicked: function() {},
-                    //         autoClose: true,
-                    //         autoCloseInterval: 5 * 1000
-                    //     });
-                    //     return;
-                    // }
+function rmcNotificationBox(text, config) {
+    notificationText.innerHTML = text;
+    notificationBox.style.display = 'block';
 
-                    // if(adminInfo.adminBusy) {
-                    //     rmcNotificationBox('Admin seems online however his status is showing "busy".', {
-                    //         btnClose: true,
-                    //         btnAccept: false,
-                    //         btnAcceptText: '',
-                    //         onBtnAcceptClicked: function() {},
-                    //         autoClose: true,
-                    //         autoCloseInterval: 5 * 1000
-                    //     });
-                    //     return;
-                    // }
+    if (config.btnClose && config.btnClose === true) {
+        btnNotificationClose.style.display = 'inline-block';
+    } else {
+        btnNotificationClose.style.display = 'none';
+    }
 
-                    rmcNotificationBox('Admin is online. You can join him. He seems "available" as well.', {
-                        btnClose: true,
-                        btnAccept: true,
-                        btnAcceptText: 'Join ' + connection.adminId,
-                        onBtnAcceptClicked: function() {
-                            connection.sendCustomMessage({
-                                messageFor: adminId,
-                                newGuest: true,
-                                guestId: connection.userid,
-                                guestInfo: connection.extra
-                            });
-                        },
-                        autoClose: false,
-                        autoCloseInterval: 2 * 1000
-                    });
-                });
-            };
-            var notificationBox = document.getElementById('notification-box');
-            var notificationText = document.getElementById('notification-text');
-            var btnNotificationClose = document.getElementById('btn-notification-close');
-            var btnNotificationAccept = document.getElementById('btn-notification-accept');
+    if (config.btnAccept && config.btnAccept === true) {
+        btnNotificationAccept.style.display = 'inline-block';
+    } else {
+        btnNotificationAccept.style.display = 'none';
+    }
 
-            function rmcNotificationBox(text, config) {
-                notificationText.innerHTML = text;
-                notificationBox.style.display = 'block';
+    if (config.btnAcceptText && config.btnAcceptText.length) {
+        btnNotificationAccept.innerHTML = config.btnAcceptText;
+    } else {
+        btnNotificationAccept.innerHTML = 'Accept';
+    }
 
-                if(config.btnClose && config.btnClose === true) {
-                    btnNotificationClose.style.display = 'inline-block';
-                }
-                else {
-                    btnNotificationClose.style.display = 'none';
-                }
+    if (config.autoClose) {
+        setTimeout(function() {
+            notificationBox.style.display = 'none';
+        }, config.autoCloseInterval || 5 * 1000);
+    }
 
-                if(config.btnAccept && config.btnAccept === true) {
-                    btnNotificationAccept.style.display = 'inline-block';
-                }
-                else {
-                    btnNotificationAccept.style.display = 'none';
-                }
+    btnNotificationClose.onclick = function() {
+        notificationBox.style.display = 'none';
+    };
 
-                if(config.btnAcceptText && config.btnAcceptText.length) {
-                    btnNotificationAccept.innerHTML = config.btnAcceptText;
-                }
-                else {
-                    btnNotificationAccept.innerHTML = 'Accept';
-                }
+    btnNotificationAccept.onclick = function() {
+        notificationBox.style.display = 'none';
+        if (config.onBtnAcceptClicked && typeof config.onBtnAcceptClicked === 'function') {
+            config.onBtnAcceptClicked();
+        }
+    };
+}
 
-                if(config.autoClose) {
-                    setTimeout(function() {
-                        notificationBox.style.display = 'none';
-                    }, config.autoCloseInterval || 5 * 1000);
-                }
+// ......................................................
+// ................FileSharing/TextChat Code.............
+// ......................................................
 
-                btnNotificationClose.onclick = function() {
-                    notificationBox.style.display = 'none';
-                };
+document.getElementById('share-file').onclick = function() {
+    var fileSelector = new FileSelector();
+    fileSelector.selectSingleFile(function(file) {
+        connection.send(file);
+    });
+};
 
-                btnNotificationAccept.onclick = function() {
-                    notificationBox.style.display = 'none';
-                    if(config.onBtnAcceptClicked && typeof config.onBtnAcceptClicked === 'function') {
-                        config.onBtnAcceptClicked();
-                    }
-                };
-            }
+document.getElementById('input-text-chat').onkeyup = function(e) {
+    if (e.keyCode != 13) return;
 
-            // ......................................................
-            // ................FileSharing/TextChat Code.............
-            // ......................................................
+    // removing trailing/leading whitespace
+    this.value = this.value.replace(/^\s+|\s+$/g, '');
+    if (!this.value.length) return;
 
-            document.getElementById('share-file').onclick = function() {
-                var fileSelector = new FileSelector();
-                fileSelector.selectSingleFile(function(file) {
-                    connection.send(file);
-                });
-            };
+    connection.send(this.value);
+    appendDIV(this.value);
+    this.value = '';
+};
 
-            document.getElementById('input-text-chat').onkeyup = function(e) {
-                if (e.keyCode != 13) return;
+var chatContainer = document.querySelector('.chat-output');
 
-                // removing trailing/leading whitespace
-                this.value = this.value.replace(/^\s+|\s+$/g, '');
-                if (!this.value.length) return;
+function appendDIV(event) {
+    var div = document.createElement('div');
+    div.innerHTML = event.data || event;
+    chatContainer.insertBefore(div, chatContainer.firstChild);
+    div.tabIndex = 0;
+    div.focus();
 
-                connection.send(this.value);
-                appendDIV(this.value);
-                this.value = '';
-            };
+    document.getElementById('input-text-chat').focus();
+}
 
-            var chatContainer = document.querySelector('.chat-output');
+// ......................................................
+// ..................RTCMultiConnection Code.............
+// ......................................................
 
-            function appendDIV(event) {
-                var div = document.createElement('div');
-                div.innerHTML = event.data || event;
-                chatContainer.insertBefore(div, chatContainer.firstChild);
-                div.tabIndex = 0;
-                div.focus();
+var connection = new RTCMultiConnection();
 
-                document.getElementById('input-text-chat').focus();
-            }
+// by default, socket.io server is assumed to be deployed on your own URL
+connection.socketURL = '/';
 
-            // ......................................................
-            // ..................RTCMultiConnection Code.............
-            // ......................................................
+// comment-out below line if you do not have your own socket.io server
+// connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
 
-            var connection = new RTCMultiConnection();
+connection.socketMessageEvent = 'admin-guest-demo';
 
-            // by default, socket.io server is assumed to be deployed on your own URL
-            connection.socketURL = '/';
+connection.enableFileSharing = true; // by default, it is "false".
 
-            // comment-out below line if you do not have your own socket.io server
-            // connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
+connection.session = {
+    audio: true,
+    video: true,
+    data: true
+};
 
-            connection.socketMessageEvent = 'admin-guest-demo';
+connection.sdpConstraints.mandatory = {
+    OfferToReceiveAudio: true,
+    OfferToReceiveVideo: true
+};
 
-            connection.enableFileSharing = true; // by default, it is "false".
+connection.videosContainer = document.getElementById('videos-container');
+connection.onstream = function(event) {
+    connection.videosContainer.appendChild(event.mediaElement);
+    event.mediaElement.play();
+    setTimeout(function() {
+        event.mediaElement.play();
+    }, 5000);
+};
 
-            connection.session = {
-                audio: true,
-                video: true,
-                data: true
-            };
+connection.onmessage = appendDIV;
+connection.filesContainer = document.getElementById('file-container');
 
-            connection.sdpConstraints.mandatory = {
-                OfferToReceiveAudio: true,
-                OfferToReceiveVideo: true
-            };
+connection.onopen = function() {
+    document.getElementById('share-file').disabled = false;
+    document.getElementById('input-text-chat').disabled = false;
 
-            connection.videosContainer = document.getElementById('videos-container');
-            connection.onstream = function(event) {
-                connection.videosContainer.appendChild(event.mediaElement);
-                event.mediaElement.play();
-                setTimeout(function() {
-                    event.mediaElement.play();
-                }, 5000);
-            };
+    document.querySelector('h1').innerHTML = 'Participantes: ' + connection.getAllParticipants().join(', ');
+};
 
-            connection.onmessage = appendDIV;
-            connection.filesContainer = document.getElementById('file-container');
+connection.onclose = function() {
+    if (connection.getAllParticipants().length) {
+        document.querySelector('h1').innerHTML = 'Vc ainda esta conectado com: ' + connection.getAllParticipants().join(', ');
+    } else {
+        document.querySelector('h1').innerHTML = 'Todos os participantes sairam ou a sala foi fechada.';
+    }
+};
 
-            connection.onopen = function() {
-                document.getElementById('share-file').disabled = false;
-                document.getElementById('input-text-chat').disabled = false;
+connection.___updateExtraData = connection.updateExtraData;
+connection.updateExtraData = function() {
+    connection.___updateExtraData();
+    connection.sendCustomMessage({
+        updatedExtraData: true,
+        adminId: connection.userid,
+        extra: connection.extra
+    });
+};
 
-                document.querySelector('h1').innerHTML = 'Participantes: ' + connection.getAllParticipants().join(', ');
-            };
+connection.onNewParticipant = function(participantId, userPreferences) {
+    if (connection.userid === connection.adminId && !connection.extra.adminBusy) {
+        connection.connectedGuestId = {}
+        connection.connectedGuestId[participantId] = participantId;
+        connection.extra.adminBusy = false;
+        connection.updateExtraData();
 
-            connection.onclose = function() {
-                if(connection.getAllParticipants().length) {
-                    document.querySelector('h1').innerHTML = 'Vc ainda esta conectado com: ' + connection.getAllParticipants().join(', ');
-                }
-                else {
-                    document.querySelector('h1').innerHTML = 'Todos os participantes sairam ou a sala foi fechada.';
-                }
-            };
+        connection.acceptParticipationRequest(participantId, userPreferences);
+    }
+};
 
-            connection.___updateExtraData = connection.updateExtraData;
-            connection.updateExtraData = function() {
-                connection.___updateExtraData();
+connection.onleave = function(event) {
+    // Object.keys(connection.connectedGuestId).includes(event.userid)
+    // if(event.userid === connection.connectedGuestId) {
+    //     connection.connectedGuestId = null;
+    //     connection.extra.adminBusy = false;
+    //     connection.updateExtraData();
+    // }
+};
+
+connection.sendCustomMessage = function(message) {
+    if (!connection.socket) connection.connectSocket();
+    connection.socket.emit(connection.socketCustomEvent, message);
+};
+
+connection.onExtraDataUpdated = function(event) {
+    if (connection.userid == connection.adminId) return;
+
+    if (event.userid === connection.adminId && event.extra.adminBusy === false) {
+        notificationBox.style.display = 'none';
+    }
+
+    if (connection.getAllParticipants().length) return;
+
+    if (event.userid === connection.adminId && event.extra.adminBusy === false) {
+        rmcNotificationBox('Admin is online. You can join him. He seems "available" as well.', {
+            btnClose: true,
+            btnAccept: true,
+            btnAcceptText: 'Join Admin',
+            onBtnAcceptClicked: function() {
                 connection.sendCustomMessage({
-                    updatedExtraData: true,
-                    adminId: connection.userid,
-                    extra: connection.extra
+                    messageFor: event.userid,
+                    newGuest: true,
+                    guestId: connection.userid,
+                    guestInfo: connection.extra
                 });
-            };
+            },
+            autoClose: false,
+            autoCloseInterval: 2 * 1000
+        });
+    }
+};
 
-            connection.onNewParticipant = function(participantId, userPreferences) {
-                if(connection.userid === connection.adminId && !connection.extra.adminBusy) {
-                    connection.connectedGuestId = {}
-                    connection.connectedGuestId[participantId] = participantId;
-                    connection.extra.adminBusy = false;
-                    connection.updateExtraData();
+function handleSocketCustomMessages() {
+    if (!connection.socket) connection.connectSocket();
+    connection.socket.on(connection.socketCustomEvent, function(message) {
+        if (message.updatedExtraData && message.adminId === connection.adminId) {
+            connection.onExtraDataUpdated({
+                userid: connection.adminId,
+                extra: message.extra
+            });
+            return;
+        }
 
-                    connection.acceptParticipationRequest(participantId, userPreferences);
-                }
-            };
+        if (message.messageFor !== connection.userid) return;
 
-            connection.onleave = function(event) {
-                // Object.keys(connection.connectedGuestId).includes(event.userid)
-                // if(event.userid === connection.connectedGuestId) {
-                //     connection.connectedGuestId = null;
-                //     connection.extra.adminBusy = false;
-                //     connection.updateExtraData();
-                // }
-            };
+        if (message.newGuest) {
+            var text = 'A new guest asked you to join him.';
+            text += '<br>Guest User-ID: ' + message.guestId;
+            text += '<br>Guest Info: ' + JSON.stringify(message.guestInfo);
 
-            connection.sendCustomMessage = function(message) {
-                if(!connection.socket) connection.connectSocket();
-                connection.socket.emit(connection.socketCustomEvent, message);
-            };
-
-            connection.onExtraDataUpdated = function(event) {
-                if(connection.userid == connection.adminId) return;
-
-                if(event.userid === connection.adminId && event.extra.adminBusy === false) {
-                    notificationBox.style.display = 'none';
-                }
-
-                if(connection.getAllParticipants().length) return;
-
-                if(event.userid === connection.adminId && event.extra.adminBusy === false) {
-                    rmcNotificationBox('Admin is online. You can join him. He seems "available" as well.', {
-                        btnClose: true,
-                        btnAccept: true,
-                        btnAcceptText: 'Join Admin',
-                        onBtnAcceptClicked: function() {
-                            connection.sendCustomMessage({
-                                messageFor: event.userid,
-                                newGuest: true,
-                                guestId: connection.userid,
-                                guestInfo: connection.extra
-                            });
-                        },
-                        autoClose: false,
-                        autoCloseInterval: 2 * 1000
+            rmcNotificationBox(text, {
+                btnClose: true,
+                btnAccept: true,
+                btnAcceptText: 'Allow Guest to Join You',
+                onBtnAcceptClicked: function() {
+                    connection.sendCustomMessage({
+                        messageFor: message.guestId,
+                        youCanJoinAdmin: true,
+                        adminId: connection.userid,
+                        adminInfo: connection.extra
                     });
-                }
-            };
+                },
+                autoClose: false,
+                autoCloseInterval: 2 * 1000
+            });
+            return;
+        }
 
-            function handleSocketCustomMessages() {
-                if(!connection.socket) connection.connectSocket();
-                connection.socket.on(connection.socketCustomEvent, function(message) {
-                    if(message.updatedExtraData && message.adminId === connection.adminId) {
-                        connection.onExtraDataUpdated({
-                            userid: connection.adminId,
-                            extra: message.extra
-                        });
-                        return;
-                    }
+        if (message.youCanJoinAdmin) {
+            connection.join(message.adminId);
 
-                    if(message.messageFor !== connection.userid) return;
+            var text = 'Admin accepted your request. Setting WebRTC connection...';
 
-                    if(message.newGuest) {
-                        var text = 'A new guest asked you to join him.';
-                        text += '<br>Guest User-ID: ' + message.guestId;
-                        text += '<br>Guest Info: ' + JSON.stringify(message.guestInfo);
+            rmcNotificationBox(text, {
+                btnClose: false,
+                btnAccept: false,
+                btnAcceptText: '',
+                onBtnAcceptClicked: function() {},
+                autoClose: true,
+                autoCloseInterval: 2 * 1000
+            });
+            return;
+        }
+    });
+}
 
-                        rmcNotificationBox(text, {
-                            btnClose: true,
-                            btnAccept: true,
-                            btnAcceptText: 'Allow Guest to Join You',
-                            onBtnAcceptClicked: function() {
-                                connection.sendCustomMessage({
-                                    messageFor: message.guestId,
-                                    youCanJoinAdmin: true,
-                                    adminId: connection.userid,
-                                    adminInfo: connection.extra
-                                });
-                            },
-                            autoClose: false,
-                            autoCloseInterval: 2 * 1000
-                        });
-                        return;
-                    }
+function disableInputButtons() {
+    document.getElementById('btn-become-admin').disabled = true;
+    // document.getElementById('btn-become-guest').disabled = true;
+    document.getElementById('admin-id').disabled = true;
+}
 
-                    if(message.youCanJoinAdmin) {
-                        connection.join(message.adminId);
+// ......................................................
+// ......................Handling admin-id................
+// ......................................................
 
-                        var text = 'Admin accepted your request. Setting WebRTC connection...';
+function showRoomURL(adminId) {
+    var roomHashURL = '#' + adminId;
+    var roomQueryStringURL = '?cam=' + adminId;
 
-                        rmcNotificationBox(text, {
-                            btnClose: false,
-                            btnAccept: false,
-                            btnAcceptText: '',
-                            onBtnAcceptClicked: function() {},
-                            autoClose: true,
-                            autoCloseInterval: 2 * 1000
-                        });
-                        return;
-                    }
-                });
-            }
+    var html = '<h2>Endereço único da sua sala:</h2><br>';
 
-            function disableInputButtons() {
-                document.getElementById('btn-become-admin').disabled = true;
-                // document.getElementById('btn-become-guest').disabled = true;
-                document.getElementById('admin-id').disabled = true;
-            }
+    // html += 'Hash URL: <a href="' + roomHashURL + '" target="_blank">' + roomHashURL + '</a>';
+    // html += '<br>';
+    html += '<a href="' + roomQueryStringURL + '" target="_blank">' + roomQueryStringURL.replace(`?cam=`, ``) + '</a>';
 
-            // ......................................................
-            // ......................Handling admin-id................
-            // ......................................................
+    var roomURLsDiv = document.getElementById('room-urls');
+    roomURLsDiv.innerHTML = html;
 
-            function showRoomURL(adminId) {
-                var roomHashURL = '#' + adminId;
-                var roomQueryStringURL = '?adminId=' + adminId;
+    roomURLsDiv.style.display = 'block';
+}
 
-                var html = '<h2>Endereço único da sua sala:</h2><br>';
+(function() {
+    var params = {},
+        r = /([^&=]+)=?([^&]*)/g;
 
-                // html += 'Hash URL: <a href="' + roomHashURL + '" target="_blank">' + roomHashURL + '</a>';
-                // html += '<br>';
-                html += '<a href="' + roomQueryStringURL + '" target="_blank">' + roomQueryStringURL + '</a>';
+    function d(s) {
+        return decodeURIComponent(s.replace(/\+/g, ' '));
+    }
+    var match, search = window.location.search;
+    while (match = r.exec(search.substring(1)))
+        params[d(match[1])] = d(match[2]);
+    window.params = params;
+})();
 
-                var roomURLsDiv = document.getElementById('room-urls');
-                roomURLsDiv.innerHTML = html;
+var adminId = '';
+if (localStorage.getItem(connection.socketMessageEvent)) {
+    adminId = localStorage.getItem(connection.socketMessageEvent);
+} else {
+    adminId = connection.token();
+}
+document.getElementById('admin-id').value = adminId;
+document.getElementById('admin-id').onkeyup = function() {
+    localStorage.setItem(connection.socketMessageEvent, this.value);
+};
 
-                roomURLsDiv.style.display = 'block';
-            }
+var hashString = location.hash.replace('#', '');
+if (hashString.length && hashString.indexOf('comment-') == 0) {
+    hashString = '';
+}
 
-            (function() {
-                var params = {},
-                    r = /([^&=]+)=?([^&]*)/g;
+var adminId = params.cam;
+if (!adminId && hashString.length) {
+    adminId = hashString;
+}
 
-                function d(s) {
-                    return decodeURIComponent(s.replace(/\+/g, ' '));
-                }
-                var match, search = window.location.search;
-                while (match = r.exec(search.substring(1)))
-                    params[d(match[1])] = d(match[2]);
-                window.params = params;
-            })();
+if (adminId && adminId.length) {
+    document.getElementById('admin-id').value = adminId;
+    localStorage.setItem(connection.socketMessageEvent, adminId);
 
-            var adminId = '';
-            if (localStorage.getItem(connection.socketMessageEvent)) {
-                adminId = localStorage.getItem(connection.socketMessageEvent);
-            } else {
-                adminId = connection.token();
-            }
-            document.getElementById('admin-id').value = adminId;
-            document.getElementById('admin-id').onkeyup = function() {
-                localStorage.setItem(connection.socketMessageEvent, this.value);
-            };
-
-            var hashString = location.hash.replace('#', '');
-            if(hashString.length && hashString.indexOf('comment-') == 0) {
-              hashString = '';
-            }
-
-            var adminId = params.adminId;
-            if(!adminId && hashString.length) {
-                adminId = hashString;
-            }
-
-            if(adminId && adminId.length) {
-                document.getElementById('admin-id').value = adminId;
-                localStorage.setItem(connection.socketMessageEvent, adminId);
-
-                disableInputButtons();
-                guest();
-                // document.getElementById('btn-become-guest').onclick();
-            }
+    disableInputButtons();
+    guest();
+    // document.getElementById('btn-become-guest').onclick();
+}
