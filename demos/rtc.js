@@ -38,7 +38,7 @@ const guest = () => {
       handleSocketCustomMessages();
 
       if (!isAdminOnline) {
-          rmcNotificationBox('Admin seems offline.', {
+          rmcNotificationBox(`${connection.adminId} esta offline.`, {
               btnClose: true,
               btnAccept: false,
               btnAcceptText: '',
@@ -49,10 +49,10 @@ const guest = () => {
           return;
       }
 
-      rmcNotificationBox('Admin is online. You can join him. He seems "available" as well.', {
+      rmcNotificationBox(`${connection.adminId} esta online.`, {
           btnClose: true,
           btnAccept: true,
-          btnAcceptText: 'Join ' + connection.adminId,
+          btnAcceptText: 'Ver ' + connection.adminId,
           onBtnAcceptClicked: function() {
               connection.sendCustomMessage({
                   messageFor: adminId,
@@ -245,7 +245,7 @@ connection.onExtraDataUpdated = function(event) {
     if (connection.getAllParticipants().length) return;
 
     if (event.userid === connection.adminId && event.extra.adminBusy === false) {
-        rmcNotificationBox('Admin is online. You can join him. He seems "available" as well.', {
+        rmcNotificationBox('Admin is '+connection.adminId+'online. You can join him. He seems "available" as well.', {
             btnClose: true,
             btnAccept: true,
             btnAcceptText: 'Join Admin',
@@ -277,14 +277,14 @@ function handleSocketCustomMessages() {
         if (message.messageFor !== connection.userid) return;
 
         if (message.newGuest) {
-            var text = 'A new guest asked you to join him.';
+            var text = 'Um novo usuario pediu para entrar.';
             text += '<br>Guest User-ID: ' + message.guestId;
             text += '<br>Guest Info: ' + JSON.stringify(message.guestInfo);
 
             rmcNotificationBox(text, {
                 btnClose: true,
                 btnAccept: true,
-                btnAcceptText: 'Allow Guest to Join You',
+                btnAcceptText: 'Libere a entrada desse usuario',
                 onBtnAcceptClicked: function() {
                     connection.sendCustomMessage({
                         messageFor: message.guestId,
@@ -302,7 +302,7 @@ function handleSocketCustomMessages() {
         if (message.youCanJoinAdmin) {
             connection.join(message.adminId);
 
-            var text = 'Admin accepted your request. Setting WebRTC connection...';
+            var text = 'Seu pedido foi aceito, entrando...';
 
             rmcNotificationBox(text, {
                 btnClose: false,
