@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.0/css/bulma.css">
+    
+    <!-- <link rel="stylesheet" href="https://cdn.webrtc-experiment.com/style.css">
+ -->
+    <title>Admin/Guest</title>
+
+    <meta name="description" content="CamCatz Admin" />
+
+    <style>
+      body {
+        font-size: 20px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      video {
+          object-fit: fill;
+          width: 30%;
+      }
+      a {
+        color: #9120F8 !important;
+      }
+      .button {
+        sbackground-color: #9120F8 !important;
+      }
+
+/*
+        button,
+        input,
+        select {
+            font-weight: normal;
+            padding: 2px 4px;
+            text-decoration: none;
+            display: inline-block;
+            text-shadow: none;
+            font-size: 16px;
+            outline: none;
+        }*/
+
+        .make-center {
+            width: 60vw;
+            margin: 0 auto
+        }
+
+        .prompt-bar {
+            background: rgb(255, 255, 255);
+            border: 9px solid rgb(216, 216, 216);
+            border-radius: 5px;
+            bottom: 0;
+            box-shadow: 0 0 5px, inset 0 0 2px;
+            display: none;
+            position: fixed;
+            right: 0;
+            width: 30%;
+            z-index: 100;
+        }
+
+        .prompt-bar #notification-header {
+            border-bottom: 1px solid rgb(213, 211, 211);
+            display: block;
+            padding: .1em .6em;
+        }
+
+        .prompt-bar #notification-text {
+            padding: .2em .6em;
+        }
+
+        .prompt-bar #controls {
+            background: rgb(175, 174, 174);
+            border: 1px solid gray;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <article>
+
+        <header style="text-align: center;">
+            <h1>Dashboard da Modelo</h1>
+        </header>
+<section class="experiment">
+            <div class="make-center">
+
+
+                <div class="field has-addons box">
+                  <p class="control is-expanded">
+                    <input type="text" class="input" id="admin-id" value="ana">
+                  </p>
+                  <p class="control">
+                    <button class="button is-danger" id="btn-become-admin">Criar sala</button>
+                  </p>
+                </div>
+
+
+
+                <div class="field has-addons box">
+                  <p class="control is-expanded">
+                    <input type="text"  class="input" id="input-text-chat" placeholder="Digite sua mensagem" disabled>
+                  </p>
+                  <p class="control">
+                    <button class="button is-danger" id="share-file" disabled>Enviar arquivo</button>
+                  </p>
+                </div>
+
+                <div  class="box" id="room-urls"></div>
+
+                <div id="chat-container"  class="box">
+                    <div id="file-container"></div>
+                    <div class="chat-output"></div>
+                </div>
+
+            </div>
+
+            <div id="videos-container"></div>
+        </section>
+     <!--    <section class="experiment">
+            <div class="make-center">
+
+                <div class="field has-addons">
+                  <p class="control is-expanded">
+                    <input type="text" class="input" id="admin-id" value="ana">
+                  </p>
+                  <p class="control">
+                    <button class="button is-danger" id="btn-become-admin">Criar sala</button>
+                  </p>
+                </div>
+
+
+
+                <div id="room-urls" style="text-align: center;display: none;background: #F1EDED;margin: 15px -10px;border: 1px solid rgb(189, 189, 189);border-left: 0;border-right: 0;"></div>
+
+                <br><br>
+
+                <div class="field has-addons">
+                    <input type="text" class="input" id="input-text-chat" placeholder="Digite sua mensagem" disabled>
+                    <button class="button is-danger" id="button share-file" disabled>Enviar arquivo</button>
+                </div>
+            </div>
+
+            <div id="chat-container">
+                <div id="file-container"></div>
+                <div class="chat-output"></div>
+            </div>
+
+            <div id="videos-container"></div>
+        </section> -->
+
+        <div id="notification-box" class="prompt-bar">
+            <h2 id="notification-header">CamCatz</h2>
+            <p id="notification-text">CamCatz</p>
+            <div id="controls">
+                <button id="btn-notification-accept" style="float:right;">Aceitar</button>
+                <button id="btn-notification-close" style="float:left;">Fechar</button>
+                <section style="color: transparent;">Painel de Controle</section>
+            </div>
+        </div>
+
+        <script src="RTCMultiConnection.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+
+        <script src="FileBufferReader.js"></script>
+
+        <script src="rtc.js"></script>
+
+        
+
+</body>
+
+</html>

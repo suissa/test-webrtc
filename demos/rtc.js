@@ -330,12 +330,14 @@ function disableInputButtons() {
 function showRoomURL(adminId) {
     var roomHashURL = '#' + adminId;
     var roomQueryStringURL = '?cam=' + adminId;
+    const base_url = location.origin + '/demos/'
 
-    var html = '<h2>Endereço único da sua sala:</h2><br>';
+    var html = '<h2>Endereço único da sua sala: ';
+    html += '<a href="' + roomQueryStringURL + '" target="_blank">' + roomQueryStringURL.replace(`?cam=`, ``) + '</a></h2>';
 
     // html += 'Hash URL: <a href="' + roomHashURL + '" target="_blank">' + roomHashURL + '</a>';
     // html += '<br>';
-    html += '<a href="' + roomQueryStringURL + '" target="_blank">' + roomQueryStringURL.replace(`?cam=`, ``) + '</a>';
+    html += '<input class="input is-expanded" value="' + base_url + roomQueryStringURL + '" type="text"> <br>';
 
     var roomURLsDiv = document.getElementById('room-urls');
     roomURLsDiv.innerHTML = html;
